@@ -1,0 +1,53 @@
+---
+Organizations:
+  - &${MSP_NAME}
+      Name: ${MSP_NAME}
+      ID: ${MSP_NAME}
+      MSPDir: ../../crypto-config/peerOrganizations/${ORG}.divvy.com/msp
+      Policies:
+        Readers:
+          Type: Signature
+          Rule: "OR('${MSP_NAME}.member')"
+        Writers:
+          Type: Signature
+          Rule: "OR('${MSP_NAME}.member')"
+        Admins:
+          Type: Signature
+          Rule: "OR('${MSP_NAME}.admin')"
+      AnchorPeers:
+        - Host: peer.${ORG}.divvy.com
+          Port: ${PEER_PORT}
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+
+Profiles:
+  ${ORG}-channel:
+    Consortium: Default
+    <<: *ChannelDefaults
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *${MSP_NAME}

@@ -1,0 +1,49 @@
+{
+  "name": "${ORG}",
+  "version": "1.0.0",
+  "client": {
+    "organization": "${ORG}",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        }
+      }
+    }
+  },
+  "organizations": {
+    "${ORG}": {
+      "mspid": "${MSP_NAME}",
+      "peers": [
+        "peer.${ORG}.divvy.com"
+      ],
+      "certificateAuthorities": [
+        "ca.${ORG}.divvy.com"
+      ]
+    }
+  },
+  "peers": {
+    "peer.${ORG}.divvy.com": {
+      "url": "grpcs://peer.${ORG}.divvy.com:${PEER_PORT}",
+      "tlsCACerts": {
+        "pem": "${PEER_PEM}"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer.${ORG}.divvy.com",
+        "hostnameOverride": "peer.${ORG}.divvy.com"
+      }
+    }
+  },
+  "certificateAuthorities": {
+    "ca.${ORG}.divvy.com": {
+      "url": "https://ca.${ORG}.divvy.com:7054",
+      "caName": "ca.${ORG}.divvy.com",
+      "tlsCACerts": {
+        "pem": "${CA_PEM}"
+      },
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+}

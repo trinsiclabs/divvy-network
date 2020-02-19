@@ -1,0 +1,80 @@
+version: '3.3'
+
+networks:
+  divvy:
+    driver: bridge
+
+services:
+  ca.divvy.com:
+    image: hyperledger/fabric-ca:1.4.4
+    container_name: ca.divvy.com
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.divvy.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.divvy.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/${PRIV_KEY}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+    ports:
+      - 7054:7054
+    volumes:
+      - ./crypto-config/ordererOrganizations/divvy.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.divvy.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/${PRIV_KEY} -b admin:adminpw'
+    networks:
+      - divvy
+
+  orderer.divvy.com:
+    image: hyperledger/fabric-orderer:1.4.4
+    container_name: orderer.divvy.com
+    environment:
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - ORDERER_GENERAL_SYSTEMCHANNEL=sys-channel
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/production/orderer/genesis.block
+      - ORDERER_GENERAL_GENESISPROFILE=Genesis
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/opt/gopath/src/github.com/hyperledger/fabric/crypto-config/orderers/orderer.divvy.com/msp/
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/opt/gopath/src/github.com/hyperledger/fabric/crypto-config/orderers/orderer.divvy.com/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/opt/gopath/src/github.com/hyperledger/fabric/crypto-config/orderers/orderer.divvy.com/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/opt/gopath/src/github.com/hyperledger/fabric/crypto-config/orderers/orderer.divvy.com/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/opt/gopath/src/github.com/hyperledger/fabric/crypto-config/orderers/orderer.divvy.com/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/opt/gopath/src/github.com/hyperledger/fabric/crypto-config/orderers/orderer.divvy.com/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/opt/gopath/src/github.com/hyperledger/fabric/crypto-config/orderers/orderer.divvy.com/tls/ca.crt]
+    ports:
+      - 7050:7050
+    volumes:
+      - ./configtx.yaml:/etc/hyperledger/fabric/configtx.yaml
+      - ./crypto-config/ordererOrganizations/divvy.com/:/opt/gopath/src/github.com/hyperledger/fabric/crypto-config
+      - ./orderer.divvy.com/:/var/hyperledger/production/orderer
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    networks:
+      - divvy
+
+  cli.divvy.com:
+    image: hyperledger/fabric-tools:1.4.4
+    container_name: cli.divvy.com
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli.divvy.com
+      - CORE_PEER_ADDRESS=orderer.divvy.com:7050
+      - CORE_PEER_LOCALMSPID=OrdererMSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/users/Admin@divvy.com/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/orderers/orderer.divvy.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/orderers/orderer.divvy.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/orderers/orderer.divvy.com/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/ordererOrganizations/divvy.com/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config
+      - ./org-config/:/opt/gopath/src/github.com/hyperledger/fabric/peer/org-config
+    depends_on:
+      - orderer.divvy.com
+    networks:
+      - divvy
