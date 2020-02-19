@@ -29,8 +29,8 @@ dockerFabricPull() {
         echo "==> FABRIC IMAGE: $IMAGES"
         echo
 
-        docker pull hyperledger/fabric-$IMAGES:$FABRIC_TAG
-        docker tag hyperledger/fabric-$IMAGES:$FABRIC_TAG hyperledger/fabric-$IMAGES
+        sudo docker pull hyperledger/fabric-$IMAGES:$FABRIC_TAG
+        sudo docker tag hyperledger/fabric-$IMAGES:$FABRIC_TAG hyperledger/fabric-$IMAGES
     done
 }
 
@@ -40,8 +40,8 @@ dockerCaPull() {
     echo "==> FABRIC CA IMAGE"
     echo
 
-    docker pull hyperledger/fabric-ca:$CA_TAG
-    docker tag hyperledger/fabric-ca:$CA_TAG hyperledger/fabric-ca
+    sudo docker pull hyperledger/fabric-ca:$CA_TAG
+    sudo docker tag hyperledger/fabric-ca:$CA_TAG hyperledger/fabric-ca
 }
 
 binaryDownload() {
@@ -92,7 +92,7 @@ dockerInstall() {
         echo "===> Pulling fabric ca Image"
         dockerCaPull ${CA_TAG}
         echo "===> List out hyperledger docker images"
-        docker images | grep hyperledger*
+        sudo docker images | grep hyperledger*
     else
         echo "========================================================="
         echo "Docker not installed, bypassing download of Fabric images"
