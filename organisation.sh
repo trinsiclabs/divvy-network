@@ -337,7 +337,7 @@ function cliInvokeChaincode() {
 }
 
 function addOrgToConsortium() {
-    local ORG_DEF="/home/vagrant/network/org-config/$1/$1.json"
+    local ORG_DEF="./org-config/$1/$1.json"
     local CONF_BLOCK="$CLI_OUTPUT_DIR/config-$1.pb"
     local CONF_MOD_BLOCK="$CLI_OUTPUT_DIR/config-modified-$1.pb"
     local CONF_DELTA_BLOCK="$CLI_OUTPUT_DIR/config-delta-$1.pb"
@@ -417,7 +417,7 @@ function createOrgChannel() {
         $ORG_PEER peer channel create \
         -o $ORDERER_PEER \
         -c "$orgChannelId" \
-        -f /home/vagrant/network/org-config/channel.tx \
+        -f ./org-config/channel.tx \
         --tls \
         --cafile $ordererCaPath
 
@@ -448,7 +448,7 @@ function createOrgChannel() {
         $ORG_PEER peer channel update \
         -o $ORDERER_PEER \
         -c "$orgChannelId" \
-        -f /home/vagrant/network/org-config/"$2-msp-anchor-$2-channel.tx" \
+        -f ./org-config/"$2-msp-anchor-$2-channel.tx" \
         --tls \
         --cafile $ordererCaPath
 
@@ -519,10 +519,10 @@ if [ "$ORG" == "" ]; then
     exit 1
 fi
 
-CONFIG_DIR="/home/vagrant/network/org-config/$ORG"
-VOLUME_DIR="/home/vagrant/network/peer.$ORG.divvy.com"
-CRYPTO_DIR="/home/vagrant/network/crypto-config/peerOrganizations/$ORG.divvy.com"
-CLI_OUTPUT_DIR="/home/vagrant/network/org-artifacts/$ORG"
+CONFIG_DIR="$PWD/org-config/$ORG"
+VOLUME_DIR="$PWD/peer.$ORG.divvy.com"
+CRYPTO_DIR="$PWD/crypto-config/peerOrganizations/$ORG.divvy.com"
+CLI_OUTPUT_DIR="./org-artifacts/$ORG"
 ORG_CLI="cli.$ORG.divvy.com"
 ORG_PEER="peer.$ORG.divvy.com"
 

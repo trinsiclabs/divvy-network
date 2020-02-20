@@ -1,7 +1,4 @@
 /bin
-/ca.divvy.com
-/config
-/crypto-config
 /docker-compose.yaml
 /orderer.*
 /peer.*

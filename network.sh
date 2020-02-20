@@ -72,7 +72,9 @@ function generateDockerCompose() {
 function networkUp() {
     checkPrereqs
 
-    if [ ! -d "crypto-config" ]; then
+    # Generate crypto material and orderer genisis block
+    # if it hasn't been done already.
+    if [ "$(ls crypto-config -1 | wc -l)" == 0 ]; then
         echo "Generating certificates for orderer..."
         generateCryptoMaterial ./crypto-config.yaml
         echo
@@ -102,7 +104,7 @@ function networkUp() {
     fi
 
     # Listen for commands on the host queue.
-    nohup sh -c "tail -f /home/vagrant/host_queue | bash &" > /dev/null 2>&1 &
+    nohup tail -f /home/vagrant/host_queue | bash &
 }
 
 function clearContainers() {
@@ -148,7 +150,12 @@ function networkDown() {
 }
 
 function networkReset() {
-    rm -rf ./crypto-config ./orderer.divvy.com ./org-config ./docker-compose.yaml
+    sudo rm -rf \
+        /home/vagrant/api/wallet/* \
+        /home/vagrant/network/crypto-config/* \
+        /home/vagrant/network/orderer.divvy.com/* \
+        /home/vagrant/network/org-config/* \
+        /home/vagrant/network/docker-compose.yaml
 }
 
 MODE=$1
