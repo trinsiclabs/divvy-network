@@ -23,7 +23,7 @@ CHANNEL_OWNER_CLI=""
 
 . utils.sh
 
-export PATH=$PWD/bin:$PATH
+export PATH=/home/vagrant/network/bin:$PATH
 
 # Print the usage message
 function printHelp() {
@@ -56,14 +56,14 @@ function checkPrereqs() {
 }
 
 function generateCryptoConfig() {
-    sed -e "s/\${ORG}/$1/g" ./templates/crypto-config.yaml
+    sed -e "s/\${ORG}/$1/g" /home/vagrant/network/templates/crypto-config.yaml
 }
 
 function generateNetworkConfig() {
     sed -e "s/\${ORG}/$1/g" \
         -e "s/\${MSP_NAME}/$2/g" \
         -e "s/\${PEER_PORT}/$3/g" \
-        ./templates/configtx.yaml
+        /home/vagrant/network/templates/configtx.yaml
 }
 
 function generateOrgDefinition() {
@@ -92,7 +92,7 @@ function generateConnectionProfile {
         -e "s/\${CA_PORT}/$4/" \
         -e "s#\${PEER_PEM}#$PP#" \
         -e "s#\${CA_PEM}#$CP#" \
-        ./templates/connection-profile.json
+        /home/vagrant/network/templates/connection-profile.json
 }
 
 function generateDockerCompose() {
@@ -109,7 +109,7 @@ function generateDockerCompose() {
         -e "s/\${CA_PORT}/$4/g" \
         -e "s/\${CC_PORT}/$5/g" \
         -e "s/\${PRIV_KEY}/$PRIV_KEY/g" \
-        ./templates/docker-compose-org.yaml
+        /home/vagrant/network/templates/docker-compose-org.yaml
 }
 
 function cliMkdirp() {
@@ -337,7 +337,7 @@ function cliInvokeChaincode() {
 }
 
 function addOrgToConsortium() {
-    local ORG_DEF="./org-config/$1/$1.json"
+    local ORG_DEF="/home/vagrant/network/org-config/$1/$1.json"
     local CONF_BLOCK="$CLI_OUTPUT_DIR/config-$1.pb"
     local CONF_MOD_BLOCK="$CLI_OUTPUT_DIR/config-modified-$1.pb"
     local CONF_DELTA_BLOCK="$CLI_OUTPUT_DIR/config-delta-$1.pb"
@@ -417,7 +417,7 @@ function createOrgChannel() {
         $ORG_PEER peer channel create \
         -o $ORDERER_PEER \
         -c "$orgChannelId" \
-        -f ./org-config/channel.tx \
+        -f /home/vagrant/network/org-config/channel.tx \
         --tls \
         --cafile $ordererCaPath
 
@@ -448,7 +448,7 @@ function createOrgChannel() {
         $ORG_PEER peer channel update \
         -o $ORDERER_PEER \
         -c "$orgChannelId" \
-        -f ./org-config/"$2-msp-anchor-$2-channel.tx" \
+        -f /home/vagrant/network/org-config/"$2-msp-anchor-$2-channel.tx" \
         --tls \
         --cafile $ordererCaPath
 
@@ -519,10 +519,10 @@ if [ "$ORG" == "" ]; then
     exit 1
 fi
 
-CONFIG_DIR="$PWD/org-config/$ORG"
-VOLUME_DIR="$PWD/peer.$ORG.divvy.com"
-CRYPTO_DIR="$PWD/crypto-config/peerOrganizations/$ORG.divvy.com"
-CLI_OUTPUT_DIR="./org-artifacts/$ORG"
+CONFIG_DIR="/home/vagrant/network/org-config/$ORG"
+VOLUME_DIR="/home/vagrant/network/peer.$ORG.divvy.com"
+CRYPTO_DIR="/home/vagrant/network/crypto-config/peerOrganizations/$ORG.divvy.com"
+CLI_OUTPUT_DIR="/home/vagrant/network/org-artifacts/$ORG"
 ORG_CLI="cli.$ORG.divvy.com"
 ORG_PEER="peer.$ORG.divvy.com"
 
@@ -627,7 +627,7 @@ elif [ "$MODE" == "remove" ]; then
     echo
 
     echo "Removing files..."
-    for dir in "$CRYPTO_DIR" "$CONFIG_DIR" "$VOLUME_DIR" "../api/wallet/${ORG}"; do
+    for dir in "$CRYPTO_DIR" "$CONFIG_DIR" "$VOLUME_DIR" "/home/vagrant/api/wallet/${ORG}"; do
         echo "Removing $dir"
         rm -rf $dir
     done

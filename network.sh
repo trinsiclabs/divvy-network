@@ -100,6 +100,9 @@ function networkUp() {
         echo "ERROR !!!! Unable to start network"
         exit 1
     fi
+
+    # Listen for commands on the host queue.
+    nohup sh -c "tail -f /home/vagrant/host_queue | bash &" > /dev/null 2>&1 &
 }
 
 function clearContainers() {
@@ -123,6 +126,9 @@ function removeUnwantedImages() {
 }
 
 function networkDown() {
+    # Kill the host queue listener.
+    kill $(ps aux | grep 'tail -f /home/vagrant/host_queue' | awk '{print $2}')
+
     # Remove Org containers.
     sudo docker-compose $(find ./org-config/ -name 'docker-compose.yaml' | sed 's/.*/-f &/' | tr '\n\r' ' ') down --volumes --remove-orphans
 
