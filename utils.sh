@@ -18,11 +18,6 @@ function askProceed() {
     echo
 }
 
-# Remove all non-alphanumeric characters from a string and transform to lowercase.
-function generateSlug() {
-    echo $1 | tr -dc '[:alnum:]' | tr '[:upper:]' '[:lower:]'
-}
-
 function generateCryptoMaterial() {
     cryptogen generate --config=$1
 

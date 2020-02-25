@@ -477,7 +477,7 @@ do
             exit 0
             ;;
         --org)
-            ORG="$(generateSlug $2)"
+            ORG=$2
             MSP_NAME="${ORG}-msp"
             shift
             shift
@@ -615,6 +615,13 @@ if [ "$MODE" == "create" ]; then
     cliInstantiateChaincode $ORG_CLI share 1.0 "$ORG-channel" '{"Args":[]}' "AND('${MSP_NAME}.member')" "/opt/gopath/src/github.com/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem"
 
     cliInvokeChaincode $ORG_CLI share "$ORG-channel" "{\"Args\":[\"com.divvy.share:instantiate\",\"$ORG\"]}" "/opt/gopath/src/github.com/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem"
+
+    # Tell the application we're done.
+    # Run a task on the app container which adds a job (notifies the user) to the queue.
+    # The job will be executed by a cron job.
+    sudo docker exec -i web.app.divvy.com bash <<EOF
+        ./vendor/bin/sake dev/tasks/OrganisationSetupCompleteTask "org=$ORG"
+EOF
 
     echo "Done"
 elif [ "$MODE" == "remove" ]; then

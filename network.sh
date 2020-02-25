@@ -151,7 +151,8 @@ function networkReset() {
         /home/vagrant/network/crypto-config/* \
         /home/vagrant/network/orderer.divvy.com/* \
         /home/vagrant/network/org-config/* \
-        /home/vagrant/network/docker-compose.yaml
+        /home/vagrant/network/docker-compose.yaml \
+        /home/vagrant/network/peer.*
 }
 
 MODE=$1
