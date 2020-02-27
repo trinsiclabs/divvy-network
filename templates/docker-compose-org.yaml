@@ -88,7 +88,7 @@ services:
         - ../../crypto-config/peerOrganizations/${ORG}.divvy.com/users/Admin@${ORG}.divvy.com/msp/:/opt/gopath/src/github.com/hyperledger/fabric/msp
         - ../../crypto-config/ordererOrganizations/divvy.com/orderers/orderer.divvy.com/msp/:/opt/gopath/src/github.com/hyperledger/fabric/orderer/msp
         - ../../crypto-config/peerOrganizations/${ORG}.divvy.com/peers/peer.${ORG}.divvy.com/tls/:/opt/gopath/src/github.com/hyperledger/fabric/tls
-        - ../../../chaincode/:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode
+        - ../../../chaincode/src/:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode
     depends_on:
       - peer.${ORG}.divvy.com
     networks:
