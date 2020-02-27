@@ -597,11 +597,8 @@ if [ "$MODE" == "create" ]; then
 
     echo "Generating wallet..."
     sudo docker exec $API_CONTAINER node ./lib/security.js enrolladmin ${ORG}
+    sudo docker exec $API_CONTAINER node ./lib/security.js registeruser ${ORG} app
     echo
-
-    if [ $? -ne 0 ]; then
-        exit 1
-    fi
 
     echo "Adding $ORG to the default consortium..."
     addOrgToConsortium $ORG $MSP_NAME
