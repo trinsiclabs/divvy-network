@@ -389,7 +389,7 @@ EOF
 }
 
 function createOrgChannel() {
-    local orgChannelId="$2-channel"
+    local orgChannelId="$2"
     local ordererCaPath=/etc/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem
 
     echo "Generating config transactions..."
@@ -405,7 +405,7 @@ function createOrgChannel() {
     configtxgen \
         -configPath $1 \
         -profile $orgChannelId \
-        -outputAnchorPeersUpdate "$1/$2-msp-anchor-$2-channel.tx" \
+        -outputAnchorPeersUpdate "$1/$2-msp-anchor-$2.tx" \
         -channelID $orgChannelId \
         -asOrg "$2-msp"
 
@@ -448,7 +448,7 @@ function createOrgChannel() {
         $ORG_PEER peer channel update \
         -o $ORDERER_PEER \
         -c "$orgChannelId" \
-        -f ./org-config/"$2-msp-anchor-$2-channel.tx" \
+        -f ./org-config/"$2-msp-anchor-$2.tx" \
         --tls \
         --cafile $ordererCaPath
 
@@ -500,7 +500,7 @@ do
         --channelowner)
             CHANNEL_OWNER=$2
             CHANNEL_OWNER_CLI="cli.$2.divvy.com"
-            CHANNEL="$2-channel"
+            CHANNEL="$2"
             shift
             shift
             ;;
@@ -609,9 +609,9 @@ if [ "$MODE" == "create" ]; then
 
     cliInstallChaincode $ORG_CLI share 1.0
 
-    cliInstantiateChaincode $ORG_CLI share 1.0 "$ORG-channel" '{"Args":[]}' "AND('${MSP_NAME}.member')" "/opt/gopath/src/github.com/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem"
+    cliInstantiateChaincode $ORG_CLI share 1.0 $ORG '{"Args":[]}' "AND('${MSP_NAME}.member')" "/opt/gopath/src/github.com/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem"
 
-    cliInvokeChaincode $ORG_CLI share "$ORG-channel" "{\"Args\":[\"com.divvy.share:instantiate\",\"$ORG\"]}" "/opt/gopath/src/github.com/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem"
+    cliInvokeChaincode $ORG_CLI share $ORG "{\"Args\":[\"com.divvy.share:instantiate\",\"$ORG\"]}" "/opt/gopath/src/github.com/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem"
 
     # Tell the application we're done.
     # Run a task on the app container which adds a job (notifies the user) to the queue.
@@ -721,5 +721,5 @@ elif [ "$MODE" == "showchannels" ]; then
 elif [ "$MODE" == "nodestatus" ]; then
     cliPeerNodeStatus $ORG_CLI
 elif [ "$MODE" == "channelinfo" ]; then
-    cliChannelInfo $ORG_CLI "$ORG-channel"
+    cliChannelInfo $ORG_CLI $ORG
 fi

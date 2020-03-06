@@ -44,7 +44,7 @@ Channel: &ChannelDefaults
       Rule: "MAJORITY Admins"
 
 Profiles:
-  ${ORG}-channel:
+  ${ORG}:
     Consortium: Default
     <<: *ChannelDefaults
     Application:

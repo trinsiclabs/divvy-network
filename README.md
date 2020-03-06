@@ -84,25 +84,25 @@ $ sudo docker exec -it cli.org1.divvy.com bash
 See the current height and hash of the org1 blockchain:
 
 ```
-$ peer channel getinfo -c org1-channel
+$ peer channel getinfo -c org1
 ```
 
 Transfer ownership of a share from org1 to org2:
 
 ```
-$ peer chaincode invoke -C org1-channel -n share -c '{"Args":["com.divvy.share:changeShareOwner","org1","1","org1","org2"]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem
+$ peer chaincode invoke -C org1 -n share -c '{"Args":["com.divvy.share:changeShareOwner","org1","1","org1","org2"]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.divvy.com-cert.pem
 ```
 
 See the new height and hash of the org1 blockchain:
 
 ```
-$ peer channel getinfo -c org1-channel
+$ peer channel getinfo -c org1
 ```
 
 Verify the share has changed ownership:
 
 ```
-$ peer chaincode query -C org1-channel -n share -c '{"Args":["com.divvy.share:queryShare","org1","1"]}'
+$ peer chaincode query -C org1 -n share -c '{"Args":["com.divvy.share:queryShare","org1","1"]}'
 ```
 
 ## Scripts
