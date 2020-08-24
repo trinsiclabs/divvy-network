@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # if version not passed in, default to latest released version
-export VERSION=1.4.4
+export VERSION=1.4.8
 
 # if ca version not passed in, default to latest released version
-export CA_VERSION=1.4.4
+export CA_VERSION=1.4.8
 
 export ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/windows/')-$(uname -m | sed 's/x86_64/amd64/g')")
 
@@ -18,8 +18,8 @@ printHelp() {
     echo "-d : bypass docker image download"
     echo "-b : bypass download of platform-specific binaries"
     echo
-    echo "e.g. bootstrap.sh 1.4.4"
-    echo "would download docker images and binaries for version 1.4.4"
+    echo "e.g. bootstrap.sh 1.4.8"
+    echo "would download docker images and binaries for version 1.4.8"
 }
 
 dockerFabricPull() {

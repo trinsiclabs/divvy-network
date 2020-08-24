@@ -21,7 +21,7 @@ function checkPrereqs() {
     # Note, we check configtxlator externally because it does not require a config file, and peer in the
     # docker image because of FAB-8551 that makes configtxlator return 'development version' in docker
     LOCAL_VERSION=$(configtxlator version | sed -ne 's/ Version: //p')
-    DOCKER_IMAGE_VERSION=$(sudo docker run --rm hyperledger/fabric-tools:1.4.4 peer version | sed -ne 's/ Version: //p' | head -1)
+    DOCKER_IMAGE_VERSION=$(sudo docker run --rm hyperledger/fabric-tools:1.4.8 peer version | sed -ne 's/ Version: //p' | head -1)
 
     echo "LOCAL_VERSION=$LOCAL_VERSION"
     echo "DOCKER_IMAGE_VERSION=$DOCKER_IMAGE_VERSION"
@@ -137,7 +137,7 @@ function networkDown() {
 
     # Don't remove the generated artifacts -- note, the ledgers are always removed
     if [ "$MODE" != "restart" ]; then
-        sudo docker run -v $PWD:/tmp/divvy --rm hyperledger/fabric-tools:1.4.4 rm -Rf /tmp/divvy/ledgers-backup
+        sudo docker run -v $PWD:/tmp/divvy --rm hyperledger/fabric-tools:1.4.8 rm -Rf /tmp/divvy/ledgers-backup
 
         clearContainers
 
