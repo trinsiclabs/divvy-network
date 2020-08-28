@@ -6,20 +6,20 @@ is the core component of the Divvy platform.
 
 ## Getting started
 
-Normally the [application](https://github.com/flashbackzoo/divvy-application)
-and [API](https://github.com/flashbackzoo/divvy-application) components are
+Normally the [application](https://github.com/trinsiclabs/divvy-application)
+and [API](https://github.com/trinsiclabs/divvy-application) components are
 used to interface with the network but it is also possible to run the network
 in "headless" mode, for development.
 
 If you just want run the platform and have a poke around, check out the main
-[platform documentation](https://github.com/flashbackzoo/divvy).
+[platform documentation](https://github.com/trinsiclabs/divvy).
 
 If you're developing / debugging the network component specifically, read on.
 
 ### Running the network in headless mode
 
 Make sure you have set up the host VM as described in the
-[platform docs](https://github.com/flashbackzoo/divvy).
+[platform docs](https://github.com/trinsiclabs/divvy).
 
 Login to the host VM and bring up the network:
 
